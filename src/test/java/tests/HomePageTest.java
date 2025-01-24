@@ -39,5 +39,9 @@ public class HomePageTest extends BaseTest {
     @AfterSuite
     public void tearDownExtentReports() {
         extent.flush();
+        if (driver != null) {
+            driver.quit();
+        }
+
     }
 }

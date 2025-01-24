@@ -34,6 +34,32 @@ public class TodoPage {
         return todoLabels.get(index).getText();
     }
 
+    public void clickFilter(String filterName) {
+        By filterLocator = By.linkText(filterName);
+        driver.findElement(filterLocator).click();
+    }
+
+    public List<WebElement> getActiveItems() {
+        return driver.findElements(By.cssSelector("ul.todo-list li:not(.completed)"));
+    }
+
+    public List<WebElement> getCompletedItems() {
+        return driver.findElements(By.cssSelector("ul.todo-list li.completed"));
+    }
+
+    public void clickCheckbox(String todoItem) {
+        List<WebElement> todoItems = driver.findElements(By.cssSelector("ul.todo-list li"));
+        for (WebElement item : todoItems) {
+            WebElement label = item.findElement(By.cssSelector("label"));
+            if (label.getText().equalsIgnoreCase(todoItem)) {
+                WebElement checkbox = item.findElement(By.cssSelector("input.toggle"));
+                checkbox.click();
+                break;
+            }
+        }
+    }
+
+
     public void clickClearCompletedButton() {
         driver.findElement(clearCompletedButton).click();
     }
