@@ -1,0 +1,8 @@
+<configuration>
+    <theme>standard</theme>
+    <encoding>UTF-8</encoding>
+    <protocol>https</protocol>
+    <resourceCDN>cdnjs</resourceCDN>
+    <documentTitle>Test Automation Report</documentTitle>
+    <reportName>Execution Report</reportName>
+</configuration>
