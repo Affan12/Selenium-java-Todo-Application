@@ -1,3 +1,4 @@
+@Todo
 Feature: Manage To-Do Items
 
   Scenario: Add a single To-Do item
@@ -82,7 +83,7 @@ Feature: Manage To-Do Items
     When I add the following To-Do items:
       | Task 1 |
       | Task 2 |
-    And I delete the first To-Do item and verify the counter
+    And I click the checkbox for "Task 2"
     Then the counter should display 1 items left
 
 

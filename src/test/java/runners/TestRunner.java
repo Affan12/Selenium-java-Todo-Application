@@ -12,7 +12,9 @@ import io.cucumber.testng.CucumberOptions;
                 "json:target/cucumber-reports/cucumber.json",
                // "tech.grasshopper.extentreports.cucumber.adapter.ExtentCucumber7Adapter:"
         }, // Plugins for reporting
-        monochrome = true                         // Pretty console output
+        monochrome = true,
+        tags = "@Todo"
+        // Pretty console output
 )
 public class TestRunner extends AbstractTestNGCucumberTests {
 }
