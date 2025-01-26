@@ -1,8 +1,10 @@
 package pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,15 +12,17 @@ import java.util.List;
 public class TodoPage {
     private WebDriver driver;
 
-    // Locators
-    private By inputField = By.className("new-todo");
-    private By todoItems = By.cssSelector("ul.todo-list li");
-    private By todoLabel = By.cssSelector("ul.todo-list li label");
-    private By clearCompletedButton = By.className("clear-completed");
-
-
-    private By itemCounter = By.cssSelector("span.todo-count"); // Updates with the actual selector
-    private By filters = By.cssSelector(".filters a");
+    // Locators (refactored from CSS to XPath)
+    private By inputField = By.xpath("//input[@class='new-todo']");
+    private By todoItems = By.xpath("//ul[@class='todo-list']/li");
+    private By todoLabel = By.xpath("//ul[@class='todo-list']/li//label");
+    private By clearCompletedButton = By.xpath("//button[@class='clear-completed']");
+    private By itemCounter = By.xpath("//span[@class='todo-count']");
+    private By filters = By.xpath("//ul[@class='filters']//a"); // Filters links like "All", "Active", "Completed"
+    private By completedItems = By.xpath("//ul[@class='todo-list']/li[contains(@class, 'completed')]");
+    private By activeItems = By.xpath("//ul[@class='todo-list']/li[not(contains(@class, 'completed'))]");
+    private By deleteButtons = By.xpath("//button[@class='destroy']");
+    private By checkboxes = By.xpath("//ul[@class='todo-list']/li//input[@class='toggle']");
 
     // Constructor
     public TodoPage(WebDriver driver) {
@@ -26,6 +30,7 @@ public class TodoPage {
     }
 
     // Actions
+
     public void enterTodoItem(String item) {
         driver.findElement(inputField).sendKeys(item);
         driver.findElement(inputField).sendKeys("\n");
@@ -40,116 +45,131 @@ public class TodoPage {
         return todoLabels.get(index).getText();
     }
 
-
-
     public List<WebElement> getActiveItems() {
-        return driver.findElements(By.cssSelector("ul.todo-list li:not(.completed)"));
+        return driver.findElements(activeItems);
     }
 
     public List<WebElement> getCompletedItems() {
-        return driver.findElements(By.cssSelector("ul.todo-list li.completed"));
+        return driver.findElements(completedItems);
     }
 
     public void clickCheckbox(String todoItem) {
-        List<WebElement> todoItems = driver.findElements(By.cssSelector("ul.todo-list li"));
-        for (WebElement item : todoItems) {
-            WebElement label = item.findElement(By.cssSelector("label"));
+        List<WebElement> items = driver.findElements(todoItems);
+        for (WebElement item : items) {
+            WebElement label = item.findElement(todoLabel);
             if (label.getText().equalsIgnoreCase(todoItem)) {
-                WebElement checkbox = item.findElement(By.cssSelector("input.toggle"));
+                WebElement checkbox = item.findElement(checkboxes);
                 checkbox.click();
                 break;
             }
         }
     }
 
-
-    // Method to return the number of items left as displayed in the counter
     public int getItemCount() {
         String counterText = driver.findElement(itemCounter).getText(); // e.g., "3 items left"
         return Integer.parseInt(counterText.split(" ")[0]); // Extract the number
     }
 
-    // Method to delete a To-Do item by index (if not already implemented)
     public void deleteTodoItem(int index) {
-        driver.findElements(By.cssSelector(".destroy")).get(index).click(); // Replace with actual locator for delete button
+        driver.findElements(deleteButtons).get(index).click();
     }
 
     public void clickClearCompletedButton() {
         driver.findElement(clearCompletedButton).click();
     }
 
-    // Add a To-Do item
     public void addTodoItem(String itemText) {
         driver.findElement(inputField).sendKeys(itemText + "\n"); // Add item by typing and pressing Enter
     }
 
-//    // Click checkbox for a specific item
-//    public void clickCheckbox(String todoItem) {
-//        List<WebElement> todoItemsList = driver.findElements(todoItems);
-//        for (WebElement item : todoItemsList) {
-//            WebElement label = item.findElement(todoLabel);
-//            if (label.getText().equalsIgnoreCase(todoItem)) {
-//                item.findElement(By.cssSelector("input.toggle")).click(); // Click checkbox
-//                break;
-//            }
-//        }
-//    }
-//
-//    // Get number of items left from the counter
-//    public int getItemCount() {
-//        String counterText = driver.findElement(itemCounter).getText(); // E.g., "3 items left"
-//        return Integer.parseInt(counterText); // Parse and return the number
-//    }
-
-    // Click a filter (All, Active, or Completed)
     public void clickFilter(String filterName) {
-//        List<WebElement> filterLinks = driver.findElements(filters);
-//        for (WebElement filter : filterLinks) {
-//            if (filter.getText().equalsIgnoreCase(filterName)) {
-//                filter.click(); // Click on the link matching filter name
-//                break;
-//            }
-//        }
-
-        String xpathExpression = String.format("//li/a[contains(text(), '%s')]", filterName);
-
-        WebElement filterLink = driver.findElement(By.xpath(xpathExpression));
-        filterLink.click();
-
-
+        String filterXpath = String.format("//ul[@class='filters']//a[contains(text(), '%s')]", filterName);
+        driver.findElement(By.xpath(filterXpath)).click();
     }
 
-    // Get list of To-Do item labels for the current filter
+    public void clickListItem(String checkbox) {
+        String formattedCheckbox = String.format("//label[contains(text(),'%s')]/..//input", checkbox);
+        driver.findElement(By.xpath(formattedCheckbox)).click();
+    }
+
     public List<String> getTodoItemsFromTab(String tabName) {
-        List<WebElement> todoItemsList = driver.findElements(todoItems);
-        List<String> items = new ArrayList<>();
-        for (WebElement item : todoItemsList) {
+        List<WebElement> items = driver.findElements(todoItems);
+        List<String> filteredItems = new ArrayList<>();
+        for (WebElement item : items) {
             boolean isCompleted = item.getAttribute("class").contains("completed");
 
-            // Logic to filter items based on the tab
             if (tabName.equalsIgnoreCase("All") ||
                     (tabName.equalsIgnoreCase("Active") && !isCompleted) ||
                     (tabName.equalsIgnoreCase("Completed") && isCompleted)) {
-                items.add(item.findElement(todoLabel).getText()); // Get the label text
+                filteredItems.add(item.findElement(todoLabel).getText());
             }
         }
-        return items; // Return the list of filtered items
+        return filteredItems;
     }
 
     public List<String> getItemsFromTab(String tabName) {
-        List<WebElement> todoItemsList = driver.findElements(todoItems); // Common locator for all To-Do items
-        List<String> items = new ArrayList<>();
-        for (WebElement item : todoItemsList) {
+        List<WebElement> items = driver.findElements(todoItems);
+        List<String> filteredItems = new ArrayList<>();
+
+        for (WebElement item : items) {
             boolean isCompleted = item.getAttribute("class").contains("completed");
 
-            // Logic to filter items based on the tab name
             if (tabName.equalsIgnoreCase("All") ||
                     (tabName.equalsIgnoreCase("Active") && !isCompleted) ||
                     (tabName.equalsIgnoreCase("Completed") && isCompleted)) {
-                items.add(item.findElement(todoLabel).getText()); // Get the label text
+                filteredItems.add(item.findElement(todoLabel).getText());
             }
         }
-        return items; // Return the list of filtered items
+        return filteredItems;
+    }
+
+
+    public void editTodoItemNew(String oldItem, String updatedItem) {
+        // Double-click the label of the To-Do item to start editing
+        By itemLocatorNew = By.xpath(String.format("//label[text()='%s']", oldItem));
+        WebElement itemLabel = driver.findElement(itemLocatorNew);
+        Actions actions = new Actions(driver);
+        actions.doubleClick(itemLabel).perform();
+
+        // Enter the updated text into the editing field
+//        By editField = By.xpath("//li[contains(@class, 'editing')]//input[@class='edit']");
+//        WebElement editInput = driver.findElement(editField);
+//        editInput.clear();
+
+        driver.findElement(By.xpath("")).clear();
+
+        itemLabel.clear();
+        itemLabel.sendKeys(updatedItem);
+    }
+
+    public void pressEnterAfterEditing() {
+        // Press Enter in the editing field
+        By editField = By.xpath("//li[contains(@class, 'editing')]//input[@class='edit']");
+        WebElement editInput = driver.findElement(editField);
+        editInput.sendKeys("\n");
+    }
+
+    //Edit
+
+    public void editTodoItem(String oldItem, String updatedItem) {
+        // Double-click the label of the To-Do item to start editing
+        By itemLabelNew = By.xpath(String.format("//label[text()='%s']", oldItem));
+        WebElement itemLabelElement = driver.findElement(itemLabelNew);
+
+        // Use Actions to perform a double-click
+        Actions actions = new Actions(driver);
+        actions.doubleClick(itemLabelElement).perform();
+
+        // Locate the now-editable input field for the item
+        By editField = By.xpath("//li[contains(@class, 'editing')]//input[@class='edit']");
+        WebElement editInput = driver.findElement(editField);
+
+        // Clear the field and enter the updated text
+        editInput.clear();
+        editInput.sendKeys(updatedItem);
+
+        // Press Enter to save the changes
+        editInput.sendKeys(Keys.ENTER);
     }
 
 

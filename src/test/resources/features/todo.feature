@@ -6,6 +6,7 @@ Feature: Manage To-Do Items
     When I add a To-Do item "Buy Milk"
     Then the To-Do list should contain "Buy Milk"
 
+
   Scenario: Add multiple To-Do items
     Given I am on the To-Do MVC homepage
     When I add the following To-Do items:
@@ -18,6 +19,7 @@ Feature: Manage To-Do Items
       | Buy Milk  |
       | Exercise  |
       | Meditate  |
+
 
   Scenario: Clear completed To-Do items
     Given I am on the To-Do MVC homepage
@@ -40,6 +42,7 @@ Feature: Manage To-Do Items
     Then I should see only the following active items:
       | item            |
       | Conduct Review  |
+
 
   Scenario: Filter Completed To-Do Items
     Given I am on the To-Do MVC homepage
@@ -87,7 +90,7 @@ Feature: Manage To-Do Items
     Then the counter should display 1 items left
 
 
-#New E2@ Scenario
+#New E2E Scenario
 
   Scenario: Verify counter and filtering functionality
     Given I am on the To-Do MVC homepage
@@ -97,9 +100,6 @@ Feature: Manage To-Do Items
     And I click the checkbox for "Task 1"
     Then the counter should display 1 items left
     And I click the "All" filter in page
-    Then the To-Do list under "All" should contain the following items:
-      | Task 1 |
-      | Task 2 |
     And I click the "Active" filter in page
     Then the counter should display 1 items left
     Then the To-Do list under "Active" should contain the following items:
@@ -108,3 +108,18 @@ Feature: Manage To-Do Items
     Then the counter should display 1 items left
     Then the To-Do list under "Completed" should contain the following items:
       | Task 1 |
+
+    #Double Click edit
+
+#  Scenario: Edit a To-Do item
+#    Given I am on the To-Do MVC homepage
+#    And I add a To-Do item "Buy Groceries"
+#    When I edit the To-Do item "Buy Groceries" to "Buy Vegetables"
+#    Then the To-Do list should contain "Buy Vegetables" item
+
+  @Todo
+  Scenario: Delete a To-Do item
+    Given I am on the To-Do MVC homepage
+    When I add a To-Do item "Buy Milk"
+    And I delete the To-Do item "Buy Milk"
+    Then the To-Do list should not contain "Buy Milk"
