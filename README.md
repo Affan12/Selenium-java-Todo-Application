@@ -9,16 +9,26 @@ This approach allows for both clear communication of test requirements and maint
 Instructions on how to run the tests.	
 
 Clone the Repository from IntelliJ
+
 Open IntelliJ and select “Get from VCS” (or go to File > New > Project from Version Control).
+
 Paste the repository URL mentioned above into the “URL” field.
+
 Click “Clone” to create a local copy of the project.
+
 Install/Enable the Cucumber Plugin
+
 Go to File > Settings (or IntelliJ Preferences on macOS).
+
 Select Plugins in the left panel.
+
 Search for “Cucumber for Java.”
+
 Install or enable it, then restart IntelliJ if prompted.
+
 Run the Cucumber Tests
-On the right hand maven panel perform under lifecycle Clean then Compile
+
+On the right hand maven panel perform under maven lifecycle Clean then Compile
 
  
 
