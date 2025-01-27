@@ -6,25 +6,19 @@ I have created automated tests for each acceptance criterion using open-source f
 This approach allows for both clear communication of test requirements and maintainable test code. It also supports seamless integration into CI/CD pipelines to verify the acceptance criteria across diverse environments
 
 
-
-3.	Upload the source code to a public repository on GitHub.
-
-https://github.com/Affan12/Selenium-java-Todo-Application/
-
-
-Provide clear instructions on how to run the tests.	
+Instructions on how to run the tests.	
 
 Clone the Repository from IntelliJ
-• Open IntelliJ and select “Get from VCS” (or go to File > New > Project from Version Control).
-• Paste the repository URL mentioned above into the “URL” field.
-• Click “Clone” to create a local copy of the project.
+Open IntelliJ and select “Get from VCS” (or go to File > New > Project from Version Control).
+Paste the repository URL mentioned above into the “URL” field.
+Click “Clone” to create a local copy of the project.
 Install/Enable the Cucumber Plugin
-• Go to File > Settings (or IntelliJ Preferences on macOS).
-• Select Plugins in the left panel.
-• Search for “Cucumber for Java.”
-• Install or enable it, then restart IntelliJ if prompted.
+Go to File > Settings (or IntelliJ Preferences on macOS).
+Select Plugins in the left panel.
+Search for “Cucumber for Java.”
+Install or enable it, then restart IntelliJ if prompted.
 Run the Cucumber Tests
-• On the right hand maven panel perform under lifecycle Clean then Compile
+On the right hand maven panel perform under lifecycle Clean then Compile
 
  
 
