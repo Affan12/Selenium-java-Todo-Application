@@ -3,6 +3,7 @@
     <test name="Google Search Test">
         <classes>
             <class name="tests.HomePageTest" />
+            <class name="tests.TodoTests" />
         </classes>
     </test>
 </suite>
