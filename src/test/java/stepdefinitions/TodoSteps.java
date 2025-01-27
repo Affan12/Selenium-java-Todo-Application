@@ -4,6 +4,7 @@ import io.cucumber.java.en.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Wait;
 import org.testng.Assert;
 import pages.TodoPage;
@@ -96,7 +97,8 @@ public class TodoSteps {
 
     @When("I click the checkbox for {string}")
     public void iClickTheCheckboxFor(String todoItem) {
-        todoPage.clickCheckbox(todoItem);
+//        todoPage.clickCheckbox(todoItem);
+        todoPage.clickListItem(todoItem);
     }
 
 
@@ -183,9 +185,52 @@ public class TodoSteps {
         }
     }
 
+//Edit Field Tests
+@When("I edit the To-Do item {string} to {string}")
+public void iEditTodoItem(String oldItem, String updatedItem) {
+    todoPage.editTodoItemNew(oldItem, updatedItem); // Reuse the page actions for editing
+}
 
+    @Then("the To-Do list should contain {string} item")
+    public void theListShouldContainItem(String todoItem) {
+        boolean itemFound = false;
+        List<WebElement> todoItems = todoPage.getTodoItems();
+        for (WebElement item : todoItems) {
+            if (item.getText().equalsIgnoreCase(todoItem)) {
+                itemFound = true;
+                break;
+            }
+        }
+        Assert.assertTrue(itemFound, "The expected To-Do item was not found: " + todoItem);
+    }
 
+    @When("I delete the To-Do item {string}")
+    public void iDeleteTheTodoItem(String todoItem) {
+        String destroyButtonXpath = String.format("//label[text()='%s']/following-sibling::button[@class='destroy']", todoItem);
+        WebElement destroyButton = driver.findElement(By.xpath(destroyButtonXpath));
 
+        // Hover over the item to make the delete button visible
+        Actions actions = new Actions(driver);
+        actions.moveToElement(driver.findElement(By.xpath(String.format("//label[text()='%s']", todoItem)))).perform();
+
+        // Click the destroy button
+        destroyButton.click();
+    }
+
+    @Then("the To-Do list should not contain {string}")
+    public void theListShouldNotContain(String todoItem) {
+        List<WebElement> todoItems = driver.findElements(By.xpath("//ul[@class='todo-list']/li"));
+        boolean itemFound = false;
+
+        for (WebElement item : todoItems) {
+            if (item.getText().trim().equalsIgnoreCase(todoItem)) {
+                itemFound = true;
+                break;
+            }
+        }
+
+        Assert.assertFalse(itemFound, "The To-Do item was not deleted: " + todoItem);
+    }
 
 
 }
