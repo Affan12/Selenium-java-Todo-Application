@@ -82,6 +82,8 @@ public class TodoPage {
         driver.findElement(inputField).sendKeys(itemText + "\n"); // Add item by typing and pressing Enter
     }
 
+    //test
+
     public void clickFilter(String filterName) {
         String filterXpath = String.format("//ul[@class='filters']//a[contains(text(), '%s')]", filterName);
         driver.findElement(By.xpath(filterXpath)).click();
