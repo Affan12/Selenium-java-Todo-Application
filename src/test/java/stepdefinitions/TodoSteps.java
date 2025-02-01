@@ -1,6 +1,7 @@
 package stepdefinitions;
 
 import io.cucumber.java.en.*;
+import io.cucumber.datatable.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -28,7 +29,7 @@ public class TodoSteps {
     }
 //test commit
 //    @When("I add the following To-Do items:")
-//    public void iAddItems(io.cucumber.datatable.DataTable dataTable) {
+//    public void iAddItems(DataTable dataTable) {
 //        dataTable.asList().forEach(todoPage::enterTodoItem);
 //    }
 
@@ -38,7 +39,7 @@ public class TodoSteps {
     }
 
     @Then("the To-Do list should contain the following items:")
-    public void theListShouldContainItems(io.cucumber.datatable.DataTable dataTable) {
+    public void theListShouldContainItems(DataTable dataTable) {
         java.util.List<String> expectedItems = dataTable.asList();
         for (int i = 0; i < expectedItems.size(); i++) {
             Assert.assertEquals(todoPage.getTodoLabelText(i), expectedItems.get(i), "Mismatch at To-Do item index " + i);
@@ -68,7 +69,7 @@ public class TodoSteps {
     }
 
     @Then("I should see only the following active items:")
-    public void iShouldSeeTheFollowingActiveItems(io.cucumber.datatable.DataTable dataTable) {
+    public void iShouldSeeTheFollowingActiveItems(DataTable dataTable) {
         List<String> activeItems = dataTable.asList();
         List<WebElement> visibleItems = todoPage.getActiveItems(); // Filtered active items
 
@@ -84,7 +85,7 @@ public class TodoSteps {
     }
 
     @Then("I should see only the following completed items:")
-    public void iShouldSeeTheFollowingCompletedItems(io.cucumber.datatable.DataTable dataTable) throws InterruptedException {
+    public void iShouldSeeTheFollowingCompletedItems(DataTable dataTable) throws InterruptedException {
         List<String> completedItems = dataTable.asList();
         List<WebElement> visibleItems = todoPage.getCompletedItems(); // Filtered completed items
 
@@ -112,7 +113,7 @@ public class TodoSteps {
     }
 
     @When("I add the following To-Do items and verify the counter:")
-    public void iAddItemsAndVerifyCounter(io.cucumber.datatable.DataTable dataTable) {
+    public void iAddItemsAndVerifyCounter(DataTable dataTable) {
         List<String> todoItems = dataTable.asList();
         for (int i = 0; i < todoItems.size(); i++) {
             todoPage.enterTodoItem(todoItems.get(i));
@@ -145,7 +146,7 @@ public class TodoSteps {
 //E2E
 
     @When("I add the following To-Do items:")
-    public void iAddTheFollowingToDoItems(io.cucumber.datatable.DataTable dataTable) {
+    public void iAddTheFollowingToDoItems(DataTable dataTable) {
         List<String> todoItems = dataTable.asList();
         for (String item : todoItems) {
             todoPage.addTodoItem(item); // Simple function to add each item
@@ -170,7 +171,7 @@ public class TodoSteps {
     }
 
     @Then("the To-Do list under {string} should contain the following items:")
-    public void theToDoListUnderTabShouldContainTheFollowingItems(String tab, io.cucumber.datatable.DataTable dataTable) {
+    public void theToDoListUnderTabShouldContainTheFollowingItems(String tab, DataTable dataTable) {
         List<String> expectedItems = dataTable.asList();
         List<String> actualItems = todoPage.getItemsFromTab(tab); // Retrieves items for the specified tab
 
